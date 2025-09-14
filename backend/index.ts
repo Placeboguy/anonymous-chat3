@@ -1,8 +1,7 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import http from 'http';
-import { Server } from 'socket.io';
 import cors from 'cors';
-import io from './socket';
+import { Server } from 'socket.io';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -15,10 +14,28 @@ app.use(cors({
 
 const server = http.createServer(app);
 
-// Attach socket.io to the server
-io.attach(server);
+// Create and configure Socket.IO server
+const io = new Server(server, {
+    cors: {
+        origin: CORS_ORIGIN,
+        methods: ['GET', 'POST']
+    }
+});
 
-app.get('/', (req, res) => {
+// Socket.IO connection handling
+io.on('connection', (socket) => {
+    console.log('A user connected');
+
+    socket.on('sendMessage', (message: { text: string; timestamp: number }) => {
+        io.emit('receiveMessage', message);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('A user disconnected');
+    });
+});
+
+app.get('/', (req: Request, res: Response) => {
     res.send('Anonymous Chat Server is running');
 });
 
