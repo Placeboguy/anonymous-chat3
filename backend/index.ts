@@ -1,7 +1,8 @@
-import express, { Request, Response } from 'express';
-import http from 'http';
+import express from 'express';
+import { Request, Response } from 'express';
+import { createServer } from 'http';
+import { Server, Socket } from 'socket.io';
 import cors from 'cors';
-import { Server } from 'socket.io';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -12,7 +13,7 @@ app.use(cors({
     origin: CORS_ORIGIN
 }));
 
-const server = http.createServer(app);
+const server = createServer(app);
 
 // Create and configure Socket.IO server
 const io = new Server(server, {
@@ -23,7 +24,7 @@ const io = new Server(server, {
 });
 
 // Socket.IO connection handling
-io.on('connection', (socket) => {
+io.on('connection', (socket: Socket) => {
     console.log('A user connected');
 
     socket.on('sendMessage', (message: { text: string; timestamp: number }) => {
