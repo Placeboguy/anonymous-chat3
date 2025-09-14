@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server/index.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/messages",
+      "dest": "src/pages/api/messages.ts"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "src/pages/index.tsx"
+    }
+  ]
+}
