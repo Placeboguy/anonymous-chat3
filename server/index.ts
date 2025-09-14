@@ -1,39 +1,25 @@
 import express from 'express';
-import { createServer } from 'http';
-import { WebSocketServer } from 'ws';
+import http from 'http';
+import { Server } from 'socket.io';
 import cors from 'cors';
+import io from './socket';
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 8080;
 
 // Enable CORS for the allowed frontend origin
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:3000';
 app.use(cors({
-    origin: FRONTEND_URL
+    origin: CORS_ORIGIN
 }));
 
-const server = createServer(app);
-const wss = new WebSocketServer({ server });
+const server = http.createServer(app);
+
+// Attach socket.io to the server
+io.attach(server);
 
 app.get('/', (req, res) => {
     res.send('Anonymous Chat Server is running');
-});
-
-wss.on('connection', (ws) => {
-    console.log('Client connected');
-
-    ws.on('message', (data) => {
-        // Broadcast the message to all connected clients
-        wss.clients.forEach((client) => {
-            if (client !== ws && client.readyState === ws.OPEN) {
-                client.send(data.toString());
-            }
-        });
-    });
-
-    ws.on('close', () => {
-        console.log('Client disconnected');
-    });
 });
 
 server.listen(PORT, () => {
