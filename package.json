@@ -10,18 +10,19 @@
     "server": "ts-node server/index.ts"
   },
   "dependencies": {
+    "@types/socket.io-client": "^1.4.36",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
     "socket.io": "latest",
-    "socket.io-client": "latest"
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
-    "typescript": "latest",
-    "ts-node": "latest",
     "@types/node": "latest",
     "@types/react": "latest",
-    "@types/react-dom": "latest"
+    "@types/react-dom": "latest",
+    "ts-node": "latest",
+    "typescript": "latest"
   },
   "license": "MIT"
 }
